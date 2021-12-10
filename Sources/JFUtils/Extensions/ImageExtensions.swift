@@ -11,6 +11,7 @@ import SwiftUI
 
 import UIKit
 
+@available(iOS 13.0, *)
 public extension Image {
     /// Creates an Image View using the given image, or the default image, if the first didn't exist.
     /// - Parameter name: The image to use for the view

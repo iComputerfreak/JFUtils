@@ -25,6 +25,7 @@ public enum DecoderConfigurationError: Error {
     case missingManagedObjectContext
 }
 
+@available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension NSManagedObject {
     /// Sets an optional value inside a NSManagedObject for the given key

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Binding {
     /// Creates a get-only Binding

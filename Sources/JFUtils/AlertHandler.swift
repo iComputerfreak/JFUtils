@@ -11,6 +11,7 @@ import UIKit
 import SwiftUI
 
 /// Represents a utility struct that displays Alerts
+@available(iOS 13.0, *)
 public struct AlertHandler {
     /// Triggers an Alert on the top most view controller in the window
     /// - Parameter alert: The Alert Controller

@@ -81,6 +81,7 @@ public struct JFUtils {
     /// An ISO8601 time string representing the current date and time. Safe to use in filenames
     /// - Parameter withTime: Whether to include the time
     /// - Returns: The date (and possibly time) string
+    @available(iOS 10.0, *)
     @available(macOS 10.12, *)
     static func isoDateString(withTime: Bool = false) -> String {
         let formatter = ISO8601DateFormatter()
@@ -95,10 +96,12 @@ public struct JFUtils {
 #if canImport(UIKit)
 
 import UIKit
+import SwiftUI
 
 public extension JFUtils {
     /// Returns either black or white, depending on the color scheme
     /// - Parameter colorScheme: The current color scheme environment variable
+    @available(iOS 13.0, *)
     static func primaryUIColor(_ colorScheme: ColorScheme) -> UIColor {
         return colorScheme == .light ? .black : .white
     }
