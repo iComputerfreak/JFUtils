@@ -1,3 +1,3 @@
 # JFUtils
 
-A description of this package.
+Some utility functions for my apps
