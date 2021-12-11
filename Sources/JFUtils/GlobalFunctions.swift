@@ -51,3 +51,49 @@ func max<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
 public func NSLocalizedString(_ key: String, tableName: String? = nil) -> String {
     NSLocalizedString(key, tableName: tableName, comment: "")
 }
+
+enum BashResult: Equatable {
+    case success
+    case failure(Int32)
+    case argumentError
+    
+    init(status: Int32) {
+        if status == 0 {
+            self = .success
+        } else {
+            self = .failure(status)
+        }
+    }
+}
+
+/// Executes the given bash command and returns its result
+/// - Parameters:
+///   - command: The command or executable to execute
+///   - arguments: The list of arguments to pass to the command
+///   - noEnv: Whether to execute the command using `/usr/bin/env`
+///   - currentDirectory: The current working directory for the command
+///   - standardOutput: The standard output handle
+///   - standardError: The standard error handle
+/// - Throws: Any errors during the process execution
+/// - Returns: The `BashResult`of the execution
+@available(macOS 10.13, *)
+@discardableResult
+func bash(_ command: String, arguments: [String] = [], noEnv: Bool = false, currentDirectory: String? = nil, standardOutput: Any = FileHandle.standardOutput, standardError: Any = FileHandle.standardError) throws -> BashResult {
+    let proc = Process()
+    if noEnv {
+        proc.executableURL = URL(fileURLWithPath: command)
+        proc.arguments = arguments
+    } else {
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        proc.arguments = [command] + arguments
+    }
+    if let currentDirectory = currentDirectory {
+        proc.currentDirectoryPath = currentDirectory
+    }
+    proc.standardOutput = standardOutput
+    proc.standardError = standardError
+    try proc.run()
+    proc.waitUntilExit()
+    // Return value 0 is success, everything else it failure
+    return BashResult(status: proc.terminationStatus)
+}
