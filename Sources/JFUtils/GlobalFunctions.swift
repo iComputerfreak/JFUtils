@@ -52,6 +52,8 @@ public func NSLocalizedString(_ key: String, tableName: String? = nil) -> String
     NSLocalizedString(key, tableName: tableName, comment: "")
 }
 
+#if os(macOS)
+
 enum BashResult: Equatable {
     case success
     case failure(Int32)
@@ -97,3 +99,5 @@ func bash(_ command: String, arguments: [String] = [], noEnv: Bool = false, curr
     // Return value 0 is success, everything else it failure
     return BashResult(status: proc.terminationStatus)
 }
+
+#endif
