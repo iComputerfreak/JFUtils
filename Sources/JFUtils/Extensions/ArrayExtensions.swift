@@ -21,7 +21,7 @@ public extension Array {
     }
 }
 
-extension Array where Element == String {
+public extension Array where Element == String {
     func joined(separator: Character) -> String {
         self.joined(separator: String(separator))
     }
