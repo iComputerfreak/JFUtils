@@ -11,6 +11,15 @@ public extension TimeZone {
     static let utc = TimeZone(secondsFromGMT: 0)!
 }
 
+public extension Calendar {
+    /// The current calendar, using the UTC timezone
+    static let utc: Calendar = {
+        var c = Calendar.current
+        c.timeZone = .utc
+        return c
+    }()
+}
+
 public extension Date {
     /// Returns the given calendar component of this date, using the given calendar
     subscript(_ component: Calendar.Component, calendar: Calendar = .current) -> Int {
@@ -49,6 +58,13 @@ public extension Date {
         let nextMonth = calendar.nextDate(after: self, matching: .init(day: 1), matchingPolicy: .nextTime)!
         let lastDay = calendar.date(byAdding: .day, value: -1, to: nextMonth)!
         return lastDay[.day]
+    }
+    
+    /// Returns this date with all time components set to zero
+    /// - Parameter calendar: The calendar to use
+    /// - Returns: The date with all time components set to zero
+    func timeErased(calendar: Calendar = .current) -> Date {
+        return calendar.date(bySettingHour: 0, minute: 0, second: 0, of: self)!
     }
 }
 
