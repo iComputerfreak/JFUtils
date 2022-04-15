@@ -77,4 +77,8 @@ public extension String {
         }
         // If the prefix does not exist, leave the string as it is
     }
+    
+    func components(separatedBy separator: Character) -> [String] {
+        self.components(separatedBy: String(separator))
+    }
 }
