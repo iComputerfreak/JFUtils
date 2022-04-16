@@ -7,24 +7,6 @@
 
 import CoreData
 
-public extension NSManagedObjectContext {
-    override var description: String {
-        if let name = self.name {
-            return "<NSManagedObjectContext: \(name)>"
-        }
-        return super.description
-    }
-}
-
-public extension CodingUserInfoKey {
-    static let managedObjectContext = CodingUserInfoKey(rawValue: "managedObjectContext")!
-    static let mediaType = CodingUserInfoKey(rawValue: "mediaType")!
-}
-
-public enum DecoderConfigurationError: Error {
-    case missingManagedObjectContext
-}
-
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension NSManagedObject {
@@ -34,8 +16,11 @@ public extension NSManagedObject {
     }
     
     /// Returns the value for the given key, or nil, if the given value does not exist
-    func getOptional<T>(forKey key: String) -> T? {
-        return _getValue(forKey: key) as! T?
+    func getOptional<T>(forKey key: String, defaultValue: T? = nil) -> T? {
+        guard let data = _getValue(forKey: key) else {
+            return defaultValue
+        }
+        return data as! T?
     }
     
     /// Sets an optional `Int` inside a NSManagedObject as an `Int64` for the given key
@@ -44,9 +29,12 @@ public extension NSManagedObject {
     }
     
     /// Returns the value for the given key, or nil, if the given value does not exist
-    func getOptionalInt(forKey key: String) -> Int? {
-        let value = _getValue(forKey: key) as! Int64?
-        return value == nil ? nil : Int(value!)
+    func getOptionalInt(forKey key: String, defaultValue: Int? = nil) -> Int? {
+        // If there is data, it must be an Int64
+        if let data = _getValue(forKey: key) {
+            return Int(data as! Int64)
+        }
+        return nil
     }
     
     /// Sets the given value inside a `NSManagedObject` for the given key
@@ -55,8 +43,11 @@ public extension NSManagedObject {
     }
     
     /// Returns the value for the given key
-    func getTransformerValue<T>(forKey key: String) -> T {
-        _getValue(forKey: key) as! T
+    func getTransformerValue<T>(forKey key: String, defaultValue: T) -> T {
+        guard let data = _getValue(forKey: key) else {
+            return defaultValue
+        }
+        return data as! T
     }
     
     /// Sets the given `Int` as an `Int64` for the given key
@@ -65,8 +56,11 @@ public extension NSManagedObject {
     }
     
     /// Returns the `Int` value for the given key
-    func getInt(forKey key: String) -> Int {
-        Int(_getValue(forKey: key) as! Int64)
+    func getInt(forKey key: String, defaultValue: Int = 0) -> Int {
+        guard let data = _getValue(forKey: key) else {
+            return defaultValue
+        }
+        return Int(data as! Int64)
     }
     
     /// Saves the enum value's raw type under the given key
@@ -75,8 +69,11 @@ public extension NSManagedObject {
     }
     
     /// Returns the enum value for the given key
-    func getEnum<T: RawRepresentable>(forKey key: String) -> T {
-        let rawValue = _getValue(forKey: key) as! T.RawValue
+    func getEnum<T: RawRepresentable>(forKey key: String, defaultValue: T) -> T {
+        guard let data = _getValue(forKey: key) else {
+            return defaultValue
+        }
+        let rawValue = data as! T.RawValue
         return T(rawValue: rawValue)!
     }
     
@@ -86,10 +83,10 @@ public extension NSManagedObject {
     }
     
     /// Returns the enum value for the given key
-    func getOptionalEnum<T: RawRepresentable>(forKey key: String) -> T? {
-        if let rawValue = _getValue(forKey: key) as? T.RawValue {
-            // We force the result, to throw an exception, if the primitive value exists, but cannot be converted to the requested enum type
-            return T(rawValue: rawValue)!
+    func getOptionalEnum<T: RawRepresentable>(forKey key: String, defaultValue: T? = nil) -> T? {
+        if let data = _getValue(forKey: key) {
+            // We force the result, to crash, if the primitive value exists, but cannot be converted to the requested enum type
+            return T(rawValue: data as! T.RawValue)!
         }
         return nil
     }
