@@ -21,7 +21,9 @@ public extension Sequence where Element: Hashable {
     func duplicatesRemoved() -> [Element] {
         return Array(Set(self))
     }
-    
+}
+
+public extension Sequence {
     /// Returns a sequence with all duplicate elements removed
     /// To determine whether two elements are duplicates, the function compares the values at the given `KeyPath`
     /// - Parameter key: The `KeyPath` used to determine if two elements are equal
