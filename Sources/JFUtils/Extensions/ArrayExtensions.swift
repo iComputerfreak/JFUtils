@@ -19,6 +19,14 @@ public extension Array {
         }
         return elements
     }
+    
+    /// Sorts the array by the given `KeyPath`
+    /// - Parameter keyPath: The key path to use as a sorting comparator
+    mutating func sort<T: Comparable>(by keyPath: KeyPath<Element, T>) {
+        self.sort { a, b in
+            a[keyPath: keyPath] < b [keyPath: keyPath]
+        }
+    }
 }
 
 public extension Array where Element == String {
