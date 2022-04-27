@@ -13,6 +13,22 @@ public extension Sequence {
             a[keyPath: keyPath] < b[keyPath: keyPath]
         }
     }
+    
+    /// Returns the sequence, sorted by the given `KeyPath`s
+    /// - Parameter keyPaths: The list of key paths to use for comparison
+    /// - Returns: The sorted sequence
+    func sorted<T>(by keyPaths: [KeyPath<Element, T>]) -> [Element] where T: Comparable {
+        self.sorted { a, b in
+            for keyPath in keyPaths {
+                // We return as soon as one keyPath mismatches
+                if a[keyPath: keyPath] != b[keyPath: keyPath] {
+                    return a[keyPath: keyPath] < b[keyPath: keyPath]
+                }
+            }
+            // If all keyPaths match
+            return true
+        }
+    }
 }
 
 

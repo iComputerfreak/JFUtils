@@ -27,6 +27,21 @@ public extension Array {
             a[keyPath: keyPath] < b [keyPath: keyPath]
         }
     }
+    
+    /// Sorts the array by the given `KeyPath`s
+    /// - Parameter keyPaths: The list of key paths to use for comparison
+    mutating func sort<T: Comparable>(by keyPaths: [KeyPath<Element, T>]) {
+        self.sort { a, b in
+            for keyPath in keyPaths {
+                // We return as soon as one keyPath mismatches
+                if a[keyPath: keyPath] != b[keyPath: keyPath] {
+                    return a[keyPath: keyPath] < b[keyPath: keyPath]
+                }
+            }
+            // If all keyPaths match
+            return true
+        }
+    }
 }
 
 public extension Array where Element == String {
