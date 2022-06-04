@@ -91,6 +91,17 @@ public extension NSManagedObject {
         return nil
     }
     
+    /// Saves the enum values' raw type under the given key
+    func setEnumArray<T: RawRepresentable>(_ value: [T], forKey key: String) {
+        setTransformerValue(value.map(\.rawValue), forKey: key)
+    }
+    
+    /// Returns the enum values for the given key
+    func getEnumArray<T: RawRepresentable>(forKey key: String, defaultValue: [T] = []) -> [T] {
+        let rawValues: [T.RawValue] = getTransformerValue(forKey: key, defaultValue: defaultValue.map(\.rawValue))
+        return rawValues.map { T(rawValue: $0)! }
+    }
+    
     /// Convenience function that sets the given primitive value for the given key and calls all neccessary functions before and after
     private func _setValue(_ value: Any?, forKey key: String) {
         DispatchQueue.main.async { self.objectWillChange.send() }
