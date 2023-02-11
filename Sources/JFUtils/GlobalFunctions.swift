@@ -13,7 +13,7 @@ import Foundation
 ///
 ///     let value: String = undefined() // Will compile as a String
 ///     print(value.components(separatedBy: " ") // Will not throw any compiler errors
-func undefined<T>(_ message: String = "") -> T {
+public func undefined<T>(_ message: String = "") -> T {
     fatalError(message)
 }
 
@@ -22,7 +22,7 @@ func undefined<T>(_ message: String = "") -> T {
 ///   - x: The first object to compare
 ///   - y: The second object to compare
 /// - Returns: The smaller non-nil object. If both objects are nil, the function returns nil.
-func min<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
+public func min<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
     if x == nil {
         return y
     }
@@ -37,7 +37,7 @@ func min<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
 ///   - x: The first object to compare
 ///   - y: The second object to compare
 /// - Returns: The bigger non-nil object. If both objects are nil, the function returns nil.
-func max<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
+public func max<T>(_ x: T?, _ y: T?) -> T? where T : Comparable {
     if x == nil {
         return y
     }
@@ -54,7 +54,7 @@ public func NSLocalizedString(_ key: String, tableName: String? = nil) -> String
 
 #if os(macOS)
 
-enum BashResult: Equatable {
+public enum BashResult: Equatable {
     case success
     case failure(Int32)
     case argumentError
@@ -80,7 +80,7 @@ enum BashResult: Equatable {
 /// - Returns: The `BashResult`of the execution
 @available(macOS 10.13, *)
 @discardableResult
-func bash(_ command: String, arguments: [String] = [], noEnv: Bool = false, currentDirectory: String? = nil, standardOutput: Any = FileHandle.standardOutput, standardError: Any = FileHandle.standardError) throws -> BashResult {
+public func bash(_ command: String, arguments: [String] = [], noEnv: Bool = false, currentDirectory: String? = nil, standardOutput: Any = FileHandle.standardOutput, standardError: Any = FileHandle.standardError) throws -> BashResult {
     let proc = Process()
     if noEnv {
         proc.executableURL = URL(fileURLWithPath: command)
