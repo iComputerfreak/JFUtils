@@ -104,7 +104,6 @@ public extension NSManagedObject {
     
     /// Convenience function that sets the given primitive value for the given key and calls all neccessary functions before and after
     private func _setValue(_ value: Any?, forKey key: String) {
-        DispatchQueue.main.async { self.objectWillChange.send() }
         willChangeValue(forKey: key)
         setPrimitiveValue(value, forKey: key)
         didChangeValue(forKey: key)
