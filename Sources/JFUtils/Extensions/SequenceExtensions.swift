@@ -5,28 +5,89 @@
 //  Created by Jonas Frey on 10.12.21.
 //
 
+
 public extension Sequence {
-    /// Returns the sequence, sorted by the given `KeyPath`
-    /// - Returns: The sorted sequence
-    func sorted<T: Comparable>(by keyPath: KeyPath<Element, T>) -> [Element] {
-        sorted { a, b in
-            a[keyPath: keyPath] < b[keyPath: keyPath]
+    @inlinable
+    func sorted<Value>(
+        on transform: (Element) throws -> Value,
+        by areInIncreasingOrder: (Value, Value) throws -> Bool,
+        isExpensiveTransform: Bool = false
+    ) rethrows -> [Element] {
+        guard isExpensiveTransform else {
+            return try sorted {
+                try areInIncreasingOrder(transform($0), transform($1))
+            }
         }
+        var pairs = try map {
+            try (element: $0, value: transform($0))
+        }
+        try pairs.sort {
+            try areInIncreasingOrder($0.value, $1.value)
+        }
+        
+        return pairs.map { $0.element }
     }
     
-    /// Returns the sequence, sorted by the given `KeyPath`s
-    /// - Parameter keyPaths: The list of key paths to use for comparison
-    /// - Returns: The sorted sequence
-    func sorted<T>(by keyPaths: [KeyPath<Element, T>]) -> [Element] where T: Comparable {
-        self.sorted { a, b in
-            for keyPath in keyPaths {
-                // We return as soon as one keyPath mismatches
-                if a[keyPath: keyPath] != b[keyPath: keyPath] {
-                    return a[keyPath: keyPath] < b[keyPath: keyPath]
-                }
+    @inlinable
+    func min<Value>(
+        on transform: (Element) throws -> Value,
+        by areInIncreasingOrder: (Value, Value) throws -> Bool,
+        isExpensiveTransform: Bool = false
+    ) rethrows -> Element? {
+        guard isExpensiveTransform else {
+            return try self.min {
+                try areInIncreasingOrder(transform($0), transform($1))
             }
-            // If all keyPaths match
-            return true
+        }
+        var pairs = try map {
+            try (element: $0, value: transform($0))
+        }
+        return try pairs.min {
+            try areInIncreasingOrder($0.value, $1.value)
+        }?.element
+    }
+    
+    @inlinable
+    func max<Value>(
+        on transform: (Element) throws -> Value,
+        by areInIncreasingOrder: (Value, Value) throws -> Bool,
+        isExpensiveTransform: Bool = false
+    ) rethrows -> Element? {
+        guard isExpensiveTransform else {
+            return try self.max {
+                try areInIncreasingOrder(transform($0), transform($1))
+            }
+        }
+        var pairs = try map {
+            try (element: $0, value: transform($0))
+        }
+        return try pairs.max {
+            try areInIncreasingOrder($0.value, $1.value)
+        }?.element
+    }
+}
+
+public extension MutableCollection where Self: RandomAccessCollection {
+    @inlinable
+    mutating func sort<Value>(
+        on transform: (Element) throws -> Value,
+        by areInIncreasingOrder: (Value, Value) throws -> Bool,
+        isExpensiveTransform: Bool = false
+    ) rethrows {
+        guard isExpensiveTransform else {
+            return try sort {
+                try areInIncreasingOrder(transform($0), transform($1))
+            }
+        }
+        var pairs = try map {
+            try (element: $0, value: transform($0))
+        }
+        try pairs.sort {
+            try areInIncreasingOrder($0.value, $1.value)
+        }
+        
+        for (i, j) in zip(indices, pairs.indices) {
+            self[i] = pairs[j].element
         }
     }
 }
