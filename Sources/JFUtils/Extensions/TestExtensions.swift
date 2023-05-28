@@ -50,11 +50,3 @@ public extension XCUIElementQuery {
         matching(NSPredicate(format: "%K BEGINSWITH %@", key, prefix)).firstMatch
     }
 }
-
-public extension XCUIApplication {
-    /// Waits until the given timeout expires.
-    /// - Parameter timeout: The timeout in seconds
-    func wait(_ timeout: TimeInterval = 1) {
-        XCTAssertFalse(wait(for: .runningBackground, timeout: timeout))
-    }
-}
