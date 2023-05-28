@@ -82,3 +82,31 @@ public extension String {
         self.components(separatedBy: String(separator))
     }
 }
+
+public extension StringProtocol {
+    /// Pads this string by adding the given `paddingString` to the left, until a given length is reached.
+    /// - Parameters:
+    ///   - length: The minimum length of the resulting string
+    ///   - paddingString: The string to use for the padding
+    /// - Returns: The padded string of at least length `length`
+    func padding(toLength length: Int, withPad paddingString: String = " ") -> String {
+        var string = String(self)
+        
+        while string.count < length {
+            string = paddingString + string
+        }
+        
+        return string
+    }
+}
+
+public extension LosslessStringConvertible {
+    /// Pads this string by adding the given `paddingString` to the left, until a given length is reached.
+    /// - Parameters:
+    ///   - length: The minimum length of the resulting string
+    ///   - paddingString: The string to use for the padding
+    /// - Returns: The padded string of at least length `length`
+    func padding(toLength length: Int, withPad paddingString: String = " ") -> String {
+        return String(self).padding(toLength: length, withPad: paddingString)
+    }
+}

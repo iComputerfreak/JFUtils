@@ -5,7 +5,6 @@
 //  Created by Jonas Frey on 10.12.21.
 //
 
-
 public extension Sequence {
     @inlinable
     func sorted<Value>(
@@ -39,7 +38,7 @@ public extension Sequence {
                 try areInIncreasingOrder(transform($0), transform($1))
             }
         }
-        var pairs = try map {
+        let pairs = try map {
             try (element: $0, value: transform($0))
         }
         return try pairs.min {
@@ -58,7 +57,7 @@ public extension Sequence {
                 try areInIncreasingOrder(transform($0), transform($1))
             }
         }
-        var pairs = try map {
+        let pairs = try map {
             try (element: $0, value: transform($0))
         }
         return try pairs.max {
@@ -145,5 +144,35 @@ public extension Sequence {
     /// - Returns: The sequence without any duplicates. Executing the `isEqual` closure with any two elements from the return value will return false.
     mutating func removeDuplicates(using isEqual: (Element, Element) -> Bool) {
         self = self.removingDuplicates(using: isEqual) as! Self
+    }
+}
+
+public extension Sequence {
+    func first<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) -> Element? {
+        return first { element in
+            element[keyPath: keyPath] == other
+        }
+    }
+}
+
+public extension Collection {
+    func firstIndex<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) -> Index? {
+        return firstIndex { element in
+            element[keyPath: keyPath] == other
+        }
+    }
+}
+
+public extension Array {
+    func last<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) -> Element? {
+        return last { element in
+            element[keyPath: keyPath] == other
+        }
+    }
+
+    func lastIndex<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) -> Index? {
+        return lastIndex { element in
+            element[keyPath: keyPath] == other
+        }
     }
 }
