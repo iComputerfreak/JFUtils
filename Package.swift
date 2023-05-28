@@ -15,6 +15,9 @@ let package = Package(
         .library(
             name: "JFUtils",
             targets: ["JFUtils"]),
+        .library(
+            name: "JFTestingUtils",
+            targets: ["JFTestingUtils"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -25,6 +28,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "JFUtils",
+            dependencies: []),
+        .target(
+            name: "JFTestingUtils",
             dependencies: []),
         .testTarget(
             name: "JFUtilsTests",

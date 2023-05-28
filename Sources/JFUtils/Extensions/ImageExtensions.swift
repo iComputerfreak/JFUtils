@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ImageExtensions.swift
 //  
 //
 //  Created by Jonas Frey on 10.12.21.

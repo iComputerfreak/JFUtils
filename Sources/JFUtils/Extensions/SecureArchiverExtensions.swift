@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SecureArchiverExtensions.swift
 //  
 //
 //  Created by Jonas Frey on 28.05.23.
