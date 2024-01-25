@@ -50,3 +50,11 @@ public extension Array where Element == String {
     }
 }
 
+public extension Array {
+    mutating func removeAll<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) {
+        self.removeAll { element in
+            element[keyPath: keyPath] == other
+        }
+    }
+}
+
