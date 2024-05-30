@@ -6,7 +6,6 @@
 //
 
 public extension Array {
-    
     /// Returns `k` random elements, keeping drawn elements in the collection
     /// - Parameter k: The number of elements to return
     /// - Returns: The specified number of random elements from the collection
@@ -19,7 +18,10 @@ public extension Array {
         }
         return elements
     }
-    
+}
+
+// MARK: - sort
+public extension Array {
     /// Sorts the array by the given `KeyPath`
     /// - Parameter keyPath: The key path to use as a sorting comparator
     mutating func sort<T: Comparable>(by keyPath: KeyPath<Element, T>) {
@@ -44,17 +46,18 @@ public extension Array {
     }
 }
 
+// MARK: - joined
 public extension Array where Element == String {
     func joined(separator: Character) -> String {
         self.joined(separator: String(separator))
     }
 }
 
+// MARK: - removeAll
 public extension Array {
-    mutating func removeAll<T: Equatable>(where keyPath: KeyPath<Element, T>, equals other: T) {
+    mutating func removeAll<T: Equatable>(where keyPath: KeyPath<Element, T>, isEqualTo other: T) {
         self.removeAll { element in
             element[keyPath: keyPath] == other
         }
     }
 }
-

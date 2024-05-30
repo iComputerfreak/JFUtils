@@ -176,3 +176,24 @@ public extension Array {
         }
     }
 }
+
+// MARK: - filter
+public extension Sequence {
+    mutating func filter(where keyPath: KeyPath<Element, Bool>) -> [Self.Element] {
+        self.filter(where: keyPath, isEqualTo: true)
+    }
+    
+    mutating func filter<T: Equatable>(where keyPath: KeyPath<Element, T>, isEqualTo other: T) -> [Self.Element] {
+        self.filter(by: keyPath, where: { $0 == other})
+    }
+    
+    mutating func filter<T: Equatable>(where keyPath: KeyPath<Element, T>, isNotEqualTo other: T) -> [Self.Element] {
+        self.filter(by: keyPath, where: { $0 != other})
+    }
+    
+    mutating func filter<T>(by keyPath: KeyPath<Element, T>, where isIncluded: (T) -> Bool) -> [Self.Element] {
+        self.filter { element in
+            isIncluded(element[keyPath: keyPath])
+        }
+    }
+}

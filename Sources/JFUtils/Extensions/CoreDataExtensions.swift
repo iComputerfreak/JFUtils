@@ -10,6 +10,10 @@ import CoreData
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension NSManagedObject {
+    // TODO: Try to replace all force unwraps with default values (or add separate `getSafe...` functions)
+    // Crashing is often not an appropriate response to a missing value.
+    // Caution. Fetching a wrong value (default value) due to some unknown fault might also corrupt some data.
+    
     /// Sets an optional value inside a NSManagedObject for the given key
     func setOptional<T>(_ value: T?, forKey key: String) {
         _setValue(value, forKey: key)
