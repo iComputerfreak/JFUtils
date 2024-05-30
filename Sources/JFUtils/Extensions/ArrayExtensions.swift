@@ -61,3 +61,12 @@ public extension Array {
         }
     }
 }
+
+// MARK: - chunked
+public extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        return stride(from: 0, to: count, by: size).map { offset in
+            Array(self[offset ..< Swift.min(offset + size, count)])
+        }
+    }
+}
