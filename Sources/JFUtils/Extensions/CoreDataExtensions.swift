@@ -29,7 +29,7 @@ public extension NSManagedObject {
         guard let data = _getValue(forKey: key) else {
             return defaultValue
         }
-        return data as! T?
+        return data as? T
     }
     
     /// Returns the value for the given key, or nil, if the given value does not exist
@@ -39,7 +39,7 @@ public extension NSManagedObject {
     
     /// Sets an optional `Int` inside a NSManagedObject as an `Int64` for the given key
     func setOptionalInt(_ value: Int?, forKey key: String) {
-        _setValue(value == nil ? nil : Int64(value!), forKey: key)
+        _setValue(value.map(Int64.init(_:)), forKey: key)
     }
     
     /// Sets an optional `Int` inside a NSManagedObject as an `Int64` for the given key
@@ -50,8 +50,8 @@ public extension NSManagedObject {
     /// Returns the value for the given key, or nil, if the given value does not exist
     func getOptionalInt(forKey key: String, defaultValue: Int? = nil) -> Int? {
         // If there is data, it must be an Int64
-        if let data = _getValue(forKey: key) {
-            return Int(data as! Int64)
+        if let data = _getValue(forKey: key) as? Int64 {
+            return Int(data)
         }
         return nil
     }
@@ -73,10 +73,10 @@ public extension NSManagedObject {
     
     /// Returns the value for the given key
     func getTransformerValue<T>(forKey key: String, defaultValue: T) -> T {
-        guard let data = _getValue(forKey: key) else {
+        guard let data = _getValue(forKey: key) as? T else {
             return defaultValue
         }
-        return data as! T
+        return data
     }
     
     /// Returns the value for the given key
@@ -96,10 +96,10 @@ public extension NSManagedObject {
     
     /// Returns the `Int` value for the given key
     func getInt(forKey key: String, defaultValue: Int = 0) -> Int {
-        guard let data = _getValue(forKey: key) else {
+        guard let data = _getValue(forKey: key) as? Int64 else {
             return defaultValue
         }
-        return Int(data as! Int64)
+        return Int(data)
     }
     
     /// Returns the `Int` value for the given key
@@ -119,11 +119,10 @@ public extension NSManagedObject {
     
     /// Returns the enum value for the given key
     func getEnum<T: RawRepresentable>(forKey key: String, defaultValue: T) -> T {
-        guard let data = _getValue(forKey: key) else {
+        guard let rawValue = _getValue(forKey: key) as? T.RawValue else {
             return defaultValue
         }
-        let rawValue = data as! T.RawValue
-        return T(rawValue: rawValue)!
+        return T(rawValue: rawValue) ?? defaultValue
     }
     
     /// Returns the enum value for the given key
@@ -143,9 +142,9 @@ public extension NSManagedObject {
     
     /// Returns the enum value for the given key
     func getOptionalEnum<T: RawRepresentable>(forKey key: String, defaultValue: T? = nil) -> T? {
-        if let data = _getValue(forKey: key) {
+        if let data = _getValue(forKey: key) as? T.RawValue {
             // We force the result, to crash, if the primitive value exists, but cannot be converted to the requested enum type
-            return T(rawValue: data as! T.RawValue)!
+            return T(rawValue: data) ?? defaultValue
         }
         return nil
     }
@@ -168,7 +167,7 @@ public extension NSManagedObject {
     /// Returns the enum values for the given key
     func getEnumArray<T: RawRepresentable>(forKey key: String, defaultValue: [T] = []) -> [T] {
         let rawValues: [T.RawValue] = getTransformerValue(forKey: key, defaultValue: defaultValue.map(\.rawValue))
-        return rawValues.map { T(rawValue: $0)! }
+        return rawValues.compactMap { T(rawValue: $0) }
     }
     
     /// Returns the enum values for the given key
